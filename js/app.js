@@ -863,7 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.print();
   }
 
-  // Export & Download PDF File (Vector PDF save)
+  // Export & Download PDF File (Vector PDF save via Blob URL)
   async function downloadPdf() {
     const sheet = document.getElementById('pdfDocSheet');
     if (!sheet) return;
@@ -882,7 +882,20 @@ document.addEventListener('DOMContentLoaded', () => {
           html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
           jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        await html2pdf().set(opt).from(sheet).save();
+        
+        const pdfWorker = html2pdf().set(opt).from(sheet);
+        const pdfBlob = await pdfWorker.output('blob');
+        
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = blobUrl;
+        link.download = defaultFilename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+
         showToast(`Downloaded PDF: ${defaultFilename}`, 'success');
         return;
       }
@@ -901,7 +914,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (jsPDFConstructor) {
         const pdf = new jsPDFConstructor({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        pdf.save(defaultFilename);
+        
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = blobUrl;
+        link.download = defaultFilename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+
         showToast(`Downloaded PDF: ${defaultFilename}`, 'success');
       } else {
         throw new Error('PDF generator library loading');
