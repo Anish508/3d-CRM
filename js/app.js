@@ -957,9 +957,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Here is your official *${typeUpper}* from *${state.company.name}*.
 
-📄 *Document:* ${typeUpper} #${state.docNumber}
-📅 *Date:* ${formatDate(state.issueDate)}
-💰 *Amount:* ${state.currency}${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+*Document:* ${typeUpper} #${state.docNumber}
+*Date:* ${formatDate(state.issueDate)}
+*Amount:* ${state.currency}${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
 
 Thank you for choosing ${state.company.domain}!
 *${state.company.name} Studio*
