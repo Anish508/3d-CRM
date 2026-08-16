@@ -42,11 +42,14 @@
 
     <!-- Header Action Buttons -->
     <div class="header-actions">
-      <button id="btnWhatsAppShare" class="btn btn-whatsapp" title="Share directly via WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i> Share WhatsApp
+      <button id="btnPrintPdf" class="btn btn-secondary" title="Print Document">
+        <i class="fa-solid fa-print"></i> Print
       </button>
       <button id="btnDownloadPdf" class="btn btn-primary" title="Export & Download PDF Document">
         <i class="fa-solid fa-file-pdf"></i> Download PDF
+      </button>
+      <button id="btnWhatsAppShare" class="btn btn-whatsapp" title="Share directly via WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i> Share WhatsApp
       </button>
     </div>
   </header>
@@ -497,8 +500,42 @@
       if (btnWhatsAppMobile && btnWhatsApp) {
         btnWhatsAppMobile.addEventListener('click', () => btnWhatsApp.click());
       }
-      if (btnDownloadMobile && btnDownload) {
-        btnDownloadMobile.addEventListener('click', () => btnDownload.click());
+  <!-- Mobile Sticky Action Bar (Fixed at bottom on mobile screens) -->
+  <div class="mobile-sticky-action-bar" id="mobileStickyActionBar">
+    <button id="btnMobilePrint" class="btn btn-secondary mobile-action-btn">
+      <i class="fa-solid fa-print"></i> Print
+    </button>
+    <button id="btnMobileDownload" class="btn btn-primary mobile-action-btn">
+      <i class="fa-solid fa-file-pdf"></i> Download PDF
+    </button>
+    <button id="btnMobileWhatsApp" class="btn btn-whatsapp mobile-action-btn">
+      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabEditor = document.getElementById('tabMobileEditor');
+      const tabPreview = document.getElementById('tabMobilePreview');
+      const editorPanel = document.getElementById('editorPanel');
+      const previewPanel = document.getElementById('previewPanel');
+
+      const btnPrint = document.getElementById('btnPrintPdf');
+      const btnDownload = document.getElementById('btnDownloadPdf');
+      const btnWhatsApp = document.getElementById('btnWhatsAppShare');
+
+      const btnMobilePrint = document.getElementById('btnMobilePrint');
+      const btnMobileDownload = document.getElementById('btnMobileDownload');
+      const btnMobileWhatsApp = document.getElementById('btnMobileWhatsApp');
+
+      if (btnMobilePrint && btnPrint) {
+        btnMobilePrint.addEventListener('click', () => btnPrint.click());
+      }
+      if (btnMobileDownload && btnDownload) {
+        btnMobileDownload.addEventListener('click', () => btnDownload.click());
+      }
+      if (btnMobileWhatsApp && btnWhatsApp) {
+        btnMobileWhatsApp.addEventListener('click', () => btnWhatsApp.click());
       }
 
       function updateMobileLayout() {

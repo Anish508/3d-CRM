@@ -740,7 +740,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.round(afterDisc + tax + (state.shippingFee || 0));
   }
 
-  // Export PDF using html2canvas & jsPDF
+  // Print Document (Distinct from Download PDF)
+  function printPdf() {
+    showToast('Opening print dialog...', 'info');
+    window.print();
+  }
+
+  // Export & Download PDF File (Vector PDF save)
   async function downloadPdf() {
     const sheet = document.getElementById('pdfDocSheet');
     if (!sheet) return;
@@ -751,47 +757,41 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast(`Generating ${defaultFilename}...`, 'info');
 
     try {
+      if (typeof html2pdf !== 'undefined') {
+        const opt = {
+          margin:       0,
+          filename:     defaultFilename,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().set(opt).from(sheet).save();
+        showToast(`Downloaded PDF: ${defaultFilename}`, 'success');
+        return;
+      }
+
+      // Fallback html2canvas + jsPDF blob save
       const canvas = await html2canvas(sheet, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff',
-        scrollX: 0,
-        scrollY: 0
+        backgroundColor: '#ffffff'
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
-
       const jsPDFConstructor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-      if (!jsPDFConstructor) {
-        throw new Error('jsPDF library not loaded');
+      
+      if (jsPDFConstructor) {
+        const pdf = new jsPDFConstructor({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        pdf.save(defaultFilename);
+        showToast(`Downloaded PDF: ${defaultFilename}`, 'success');
+      } else {
+        throw new Error('PDF generator library loading');
       }
-
-      const pdf = new jsPDFConstructor({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-
-      const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = defaultFilename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-      showToast(`Downloaded: ${defaultFilename}`, 'success');
-
     } catch (err) {
       console.error('PDF export error:', err);
-      showToast('Export failed, opening print dialog...', 'info');
-      window.print();
+      showToast('PDF download failed. Try using Print -> Save as PDF.', 'warning');
     }
   }
 
@@ -801,33 +801,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let cleanPhone = rawPhone.replace(/\D/g, '');
 
     if (!cleanPhone) {
-      alert('Please enter a valid client WhatsApp / Phone number first.');
-      return;
+      const inputPhone = prompt('Enter Client Phone / WhatsApp Number with country code:', '+91 ');
+      if (!inputPhone) return;
+      cleanPhone = inputPhone.replace(/\D/g, '');
     }
 
     if (cleanPhone.length === 10) {
       cleanPhone = '91' + cleanPhone;
     }
 
-    const totalAmount = calculateTotal();
+    const recAmount = state.receipt.amountPaid || calculateTotal();
+    const totalAmount = state.docType === 'receipt' ? recAmount : calculateTotal();
     const typeUpper = state.docType.toUpperCase();
 
     const message = 
-`Hello *${state.client.name}*,
+`Hello *${state.client.name || 'Valued Client'}*,
 
 Here is your official *${typeUpper}* from *${state.company.name}*.
 
 📄 *Document:* ${typeUpper} #${state.docNumber}
 📅 *Date:* ${formatDate(state.issueDate)}
-💰 *Total Amount:* ${state.currency}${totalAmount.toLocaleString('en-IN')}
+💰 *Amount:* ${state.currency}${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
 
 Thank you for choosing ${state.company.domain}!
-*${state.company.name}*
+*${state.company.name} Studio*
 Phone: ${state.company.phone}`;
 
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+    const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
-    showToast('WhatsApp chat opened!', 'success');
+    showToast('WhatsApp share window opened!', 'success');
   }
 
   // Reset to default sample data
