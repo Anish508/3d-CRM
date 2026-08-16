@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       name: 'HERITAGE',
       subtext: '3D & Design Solutions',
       address: '102 Heritage Creative Studio, Craft Sector, New Delhi',
-      phone: '+91 99999 88888',
+      phone: '+91 96060 76606',
       email: 'info@heritage3d.com',
       website: 'www.heritage3d.com',
       taxId: 'GSTIN: 07AAAAA0000A1Z5'
@@ -623,8 +623,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.bankAccountType === 'upi') {
           elements.previewBankText.innerHTML = 
             `Payment Method: UPI / GPay / PhonePe<br>` +
-            `UPI ID: heritage3d@upi<br>` +
-            `GPay / PhonePe: +91 99999 88888`;
+            `UPI ID: 9606076606@upi<br>` +
+            `GPay / PhonePe: +91 96060 76606`;
         } else if (state.bankAccountType === 'custom') {
           elements.previewBankText.innerHTML = escapeHtml(state.customBankDetails || '').replace(/\n/g, '<br>');
         } else {
