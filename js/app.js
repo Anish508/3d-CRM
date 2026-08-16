@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       address: '102 Heritage Creative Studio, Craft Sector',
       cityStateZip: 'New Delhi 110001',
       phone: '+91 96060 76606',
-      email: 'info@3dheritage.com'
+      email: '3dprintheritage@gmail.com'
     },
 
     // Line Items
@@ -97,13 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
     notesControlsGrid: document.getElementById('notesControlsGrid'),
 
     // Receipt Section Elements
+    // Editor Form Sections & Controls
+    configSectionTitle: document.getElementById('configSectionTitle'),
+    docNumberLabel: document.getElementById('docNumberLabel'),
+    docStatusGroup: document.getElementById('docStatusGroup'),
+    issueDateLabel: document.getElementById('issueDateLabel'),
+    dueDateGroup: document.getElementById('dueDateGroup'),
+
     receiptDetailsSection: document.getElementById('receiptDetailsSection'),
     paymentModeSelect: document.getElementById('paymentModeSelect'),
-    transactionIdInput: document.getElementById('transactionIdInput'),
     amountPaidInput: document.getElementById('amountPaidInput'),
-    paymentDateInput: document.getElementById('paymentDateInput'),
+    creditedToInput: document.getElementById('creditedToInput'),
+    forNoteInput: document.getElementById('forNoteInput'),
 
-    // Editor Form Inputs
+    clientSectionHeading: document.getElementById('clientSectionHeading'),
+    clientNameLabel: document.getElementById('clientNameLabel'),
+    clientBusinessGroup: document.getElementById('clientBusinessGroup'),
+    clientBusinessInput: document.getElementById('clientBusinessInput'),
+    clientEmailGroup: document.getElementById('clientEmailGroup'),
+    clientAddressGroup: document.getElementById('clientAddressGroup'),
+
+    itemsSection: document.getElementById('itemsSection'),
+    taxesSection: document.getElementById('taxesSection'),
+    shippingFeeGroup: document.getElementById('shippingFeeGroup'),
+
+    notesSection: document.getElementById('notesSection'),
+    notesInputGroup: document.getElementById('notesInputGroup'),
+    termsInputGroup: document.getElementById('termsInputGroup'),
+
     currencySelect: document.getElementById('currencySelect'),
     docNumberInput: document.getElementById('docNumberInput'),
     docStatusSelect: document.getElementById('docStatusSelect'),
@@ -275,9 +296,25 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.dueDateInput.addEventListener('input', (e) => { state.dueDate = e.target.value; renderPreview(); saveToLocalStorage(); });
 
     elements.clientNameInput.addEventListener('input', (e) => { state.client.name = e.target.value; renderPreview(); saveToLocalStorage(); });
+    if (elements.clientBusinessInput) {
+      elements.clientBusinessInput.addEventListener('input', (e) => { state.client.businessName = e.target.value; renderPreview(); saveToLocalStorage(); });
+    }
     elements.clientPhoneInput.addEventListener('input', (e) => { state.client.phone = e.target.value; renderPreview(); saveToLocalStorage(); });
     elements.clientEmailInput.addEventListener('input', (e) => { state.client.email = e.target.value; renderPreview(); saveToLocalStorage(); });
     elements.clientAddressInput.addEventListener('input', (e) => { state.client.address = e.target.value; renderPreview(); saveToLocalStorage(); });
+
+    if (elements.paymentModeSelect) {
+      elements.paymentModeSelect.addEventListener('change', (e) => { state.receipt.paymentMode = e.target.value; renderPreview(); saveToLocalStorage(); });
+    }
+    if (elements.amountPaidInput) {
+      elements.amountPaidInput.addEventListener('input', (e) => { state.receipt.amountPaid = parseFloat(e.target.value) || 0; renderPreview(); saveToLocalStorage(); });
+    }
+    if (elements.creditedToInput) {
+      elements.creditedToInput.addEventListener('input', (e) => { state.receipt.creditedTo = e.target.value; renderPreview(); saveToLocalStorage(); });
+    }
+    if (elements.forNoteInput) {
+      elements.forNoteInput.addEventListener('input', (e) => { state.receipt.forNote = e.target.value; renderPreview(); saveToLocalStorage(); });
+    }
 
     elements.discountTypeSelect.addEventListener('change', (e) => { state.discountType = e.target.value; renderPreview(); saveToLocalStorage(); });
     elements.discountValueInput.addEventListener('input', (e) => { state.discountValue = parseFloat(e.target.value) || 0; renderPreview(); saveToLocalStorage(); });
@@ -302,6 +339,82 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.btnPrintPdf.addEventListener('click', () => window.print());
     elements.btnWhatsAppShare.addEventListener('click', shareViaWhatsApp);
     elements.btnResetData.addEventListener('click', resetToDefaultData);
+  }
+
+  // Update Editor Form Visibility per Document Usecase (Invoice vs Quotation vs Receipt)
+  function updateFormVisibility() {
+    const type = state.docType;
+
+    if (type === 'invoice') {
+      if (elements.configSectionTitle) elements.configSectionTitle.textContent = 'Invoice Configuration';
+      if (elements.docNumberLabel) elements.docNumberLabel.textContent = 'Invoice Number';
+      if (elements.docStatusGroup) elements.docStatusGroup.style.display = 'block';
+      if (elements.issueDateLabel) elements.issueDateLabel.textContent = 'Invoice Date';
+      if (elements.dueDateGroup) elements.dueDateGroup.style.display = 'block';
+      if (elements.dueDateLabel) elements.dueDateLabel.textContent = 'Due Date';
+      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'block';
+
+      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'none';
+
+      if (elements.clientSectionHeading) elements.clientSectionHeading.textContent = 'Client Billing Info (BILL TO)';
+      if (elements.clientNameLabel) elements.clientNameLabel.textContent = 'Client Name';
+      if (elements.clientBusinessGroup) elements.clientBusinessGroup.style.display = 'block';
+      if (elements.clientEmailGroup) elements.clientEmailGroup.style.display = 'block';
+      if (elements.clientAddressGroup) elements.clientAddressGroup.style.display = 'block';
+
+      if (elements.itemsSection) elements.itemsSection.style.display = 'block';
+      if (elements.taxesSection) elements.taxesSection.style.display = 'block';
+      if (elements.shippingFeeGroup) elements.shippingFeeGroup.style.display = 'block';
+
+      if (elements.notesInputGroup) elements.notesInputGroup.style.display = 'block';
+      if (elements.termsInputGroup) elements.termsInputGroup.style.display = 'block';
+
+    } else if (type === 'quotation') {
+      if (elements.configSectionTitle) elements.configSectionTitle.textContent = 'Quotation Configuration';
+      if (elements.docNumberLabel) elements.docNumberLabel.textContent = 'Quotation Number';
+      if (elements.docStatusGroup) elements.docStatusGroup.style.display = 'block';
+      if (elements.issueDateLabel) elements.issueDateLabel.textContent = 'Quotation Date';
+      if (elements.dueDateGroup) elements.dueDateGroup.style.display = 'block';
+      if (elements.dueDateLabel) elements.dueDateLabel.textContent = 'Valid Until';
+      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'none';
+
+      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'none';
+
+      if (elements.clientSectionHeading) elements.clientSectionHeading.textContent = 'Client Quotation Info (QUOTE FOR)';
+      if (elements.clientNameLabel) elements.clientNameLabel.textContent = 'Client Name';
+      if (elements.clientBusinessGroup) elements.clientBusinessGroup.style.display = 'block';
+      if (elements.clientEmailGroup) elements.clientEmailGroup.style.display = 'block';
+      if (elements.clientAddressGroup) elements.clientAddressGroup.style.display = 'block';
+
+      if (elements.itemsSection) elements.itemsSection.style.display = 'block';
+      if (elements.taxesSection) elements.taxesSection.style.display = 'block';
+      if (elements.shippingFeeGroup) elements.shippingFeeGroup.style.display = 'none';
+
+      if (elements.notesInputGroup) elements.notesInputGroup.style.display = 'none';
+      if (elements.termsInputGroup) elements.termsInputGroup.style.display = 'block';
+
+    } else if (type === 'receipt') {
+      if (elements.configSectionTitle) elements.configSectionTitle.textContent = 'Receipt Configuration';
+      if (elements.docNumberLabel) elements.docNumberLabel.textContent = 'Receipt Number';
+      if (elements.docStatusGroup) elements.docStatusGroup.style.display = 'none';
+      if (elements.issueDateLabel) elements.issueDateLabel.textContent = 'Receipt Date';
+      if (elements.dueDateGroup) elements.dueDateGroup.style.display = 'none';
+      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'none';
+
+      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'block';
+
+      if (elements.clientSectionHeading) elements.clientSectionHeading.textContent = 'Payer Details (RECEIVED WITH THANKS FROM)';
+      if (elements.clientNameLabel) elements.clientNameLabel.textContent = 'Payer / Client Name';
+      if (elements.clientBusinessGroup) elements.clientBusinessGroup.style.display = 'none';
+      if (elements.clientEmailGroup) elements.clientEmailGroup.style.display = 'none';
+      if (elements.clientAddressGroup) elements.clientAddressGroup.style.display = 'none';
+
+      if (elements.itemsSection) elements.itemsSection.style.display = 'none';
+      if (elements.taxesSection) elements.taxesSection.style.display = 'none';
+
+      if (elements.notesInputGroup) elements.notesInputGroup.style.display = 'block';
+      if (elements.termsInputGroup) elements.termsInputGroup.style.display = 'none';
+    }
   }
 
   // Set Document Type (Invoice vs Quotation vs Receipt)
@@ -333,9 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'item-2', name: 'Email Signature Design', description: '', quantity: 1.00, price: 750 }
       ];
       state.notes = 'Please make payment to our designated accounts. Mention invoice number in reference.';
-      elements.dueDateLabel.textContent = 'Due Date';
-      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'none';
-      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'block';
 
     } else if (type === 'quotation') {
       elements.btnQuotationType.classList.add('active');
@@ -357,9 +467,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'item-4', name: 'Domain Purchase .com 1 Year', description: '', quantity: 1.00, price: 750 }
       ];
       state.notes = '';
-      elements.dueDateLabel.textContent = 'Valid Until';
-      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'none';
-      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'none';
 
     } else if (type === 'receipt') {
       if (elements.btnReceiptType) elements.btnReceiptType.classList.add('active');
@@ -374,9 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
         address: ''
       };
       state.receipt.amountPaid = 2150;
-      elements.dueDateLabel.textContent = 'Payment Date';
-      if (elements.receiptDetailsSection) elements.receiptDetailsSection.style.display = 'block';
-      if (elements.advancePaidGroup) elements.advancePaidGroup.style.display = 'none';
+      state.receipt.paymentMode = 'Bank Transfer';
+      state.receipt.creditedTo = '3DHeritage Account';
+      state.receipt.forNote = 'For Invoice #INV-20260707-731: Brochure design, Email Signature Design';
     }
 
     renderFormValues();
@@ -507,6 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render Form Input Values from State
   function renderFormValues() {
+    updateFormVisibility();
+
     elements.currencySelect.value = state.currency;
     elements.docNumberInput.value = state.docNumber;
     if (elements.docStatusSelect) elements.docStatusSelect.value = state.docStatus || 'SENT';
@@ -525,15 +634,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.toggleNotesSection) elements.toggleNotesSection.checked = state.enableNotesSection !== false;
     if (elements.notesControlsGrid) elements.notesControlsGrid.style.display = state.enableNotesSection !== false ? 'grid' : 'none';
 
-    if (elements.paymentModeSelect) elements.paymentModeSelect.value = state.receipt.paymentMode;
-    if (elements.transactionIdInput) elements.transactionIdInput.value = state.receipt.transactionId;
-    if (elements.amountPaidInput) elements.amountPaidInput.value = state.receipt.amountPaid;
-    if (elements.paymentDateInput) elements.paymentDateInput.value = state.receipt.paymentDate;
+    if (elements.paymentModeSelect) elements.paymentModeSelect.value = state.receipt.paymentMode || 'Bank Transfer';
+    if (elements.amountPaidInput) elements.amountPaidInput.value = state.receipt.amountPaid || 2150;
+    if (elements.creditedToInput) elements.creditedToInput.value = state.receipt.creditedTo || `${state.company.name} Account`;
+    if (elements.forNoteInput) elements.forNoteInput.value = state.receipt.forNote || 'For Invoice #INV-20260707-731: Brochure design, Email Signature Design';
 
-    elements.clientNameInput.value = state.client.name;
-    elements.clientPhoneInput.value = state.client.phone;
-    elements.clientEmailInput.value = state.client.email;
-    elements.clientAddressInput.value = state.client.address;
+    elements.clientNameInput.value = state.client.name || '';
+    if (elements.clientBusinessInput) elements.clientBusinessInput.value = state.client.businessName || '';
+    elements.clientPhoneInput.value = state.client.phone || '';
+    if (elements.clientEmailInput) elements.clientEmailInput.value = state.client.email || '';
+    if (elements.clientAddressInput) elements.clientAddressInput.value = state.client.address || '';
 
     elements.discountTypeSelect.value = state.discountType;
     elements.discountValueInput.value = state.discountValue;
@@ -580,11 +690,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (elements.previewReceiptAckAmount) elements.previewReceiptAckAmount.textContent = `${state.currency}${recAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
       if (elements.previewReceiptPaymentMethod) elements.previewReceiptPaymentMethod.textContent = state.receipt.paymentMode || 'Bank Transfer';
-      if (elements.previewReceiptCredited) elements.previewReceiptCredited.textContent = `${state.company.name} Account`;
-      if (elements.previewReceiptForInvNum) elements.previewReceiptForInvNum.textContent = state.docNumber.replace(/^REC-/, 'INV-');
+      if (elements.previewReceiptCredited) elements.previewReceiptCredited.textContent = state.receipt.creditedTo || `${state.company.name} Account`;
       
-      const itemNames = state.items.map(i => i.name).filter(Boolean).join(', ');
-      if (elements.previewReceiptForItems) elements.previewReceiptForItems.textContent = itemNames || '3D Modeling & Rendering Services';
+      const forNoteElem = document.getElementById('previewReceiptForNotes');
+      if (forNoteElem) {
+        if (state.receipt.forNote && state.receipt.forNote.trim()) {
+          forNoteElem.innerHTML = escapeHtml(state.receipt.forNote);
+        } else {
+          const itemNames = state.items.map(i => i.name).filter(Boolean).join(', ');
+          const invRef = state.docNumber.replace(/^REC-/, 'INV-');
+          forNoteElem.innerHTML = `For: Invoice #${escapeHtml(invRef)}: ${escapeHtml(itemNames || '3D Modeling Services')}`;
+        }
+      }
 
       if (elements.previewReceiptSigCompany) elements.previewReceiptSigCompany.textContent = state.company.name || '3DHeritage';
 
@@ -800,13 +917,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let rawPhone = state.client.phone || '';
     let cleanPhone = rawPhone.replace(/\D/g, '');
 
-    if (!cleanPhone) {
-      const inputPhone = prompt('Enter Client Phone / WhatsApp Number with country code:', '+91 ');
-      if (!inputPhone) return;
-      cleanPhone = inputPhone.replace(/\D/g, '');
-    }
-
-    if (cleanPhone.length === 10) {
+    // Default to owner's number 916363297814 unless custom client phone is entered
+    if (!cleanPhone || cleanPhone.includes('553033714') || cleanPhone.includes('9876543210')) {
+      cleanPhone = '916363297814';
+    } else if (cleanPhone.length === 10) {
       cleanPhone = '91' + cleanPhone;
     }
 
@@ -825,11 +939,12 @@ Here is your official *${typeUpper}* from *${state.company.name}*.
 
 Thank you for choosing ${state.company.domain}!
 *${state.company.name} Studio*
-Phone: ${state.company.phone}`;
+Email: 3dprintheritage@gmail.com
+Phone: +91 96060 76606`;
 
-    const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
-    showToast('WhatsApp share window opened!', 'success');
+    showToast(`WhatsApp message opened for +${cleanPhone}!`, 'success');
   }
 
   // Reset to default sample data

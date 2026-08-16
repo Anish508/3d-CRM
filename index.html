@@ -77,9 +77,9 @@
       <div class="panel-body">
         
         <!-- Document General Config -->
-        <div class="form-section">
+        <div class="form-section" id="configSection">
           <div class="section-label">
-            <span><i class="fa-solid fa-gear"></i> Document Configuration</span>
+            <span><i class="fa-solid fa-gear"></i> <span id="configSectionTitle">Document Configuration</span></span>
           </div>
           <div class="grid-3">
             <div class="form-group">
@@ -89,10 +89,10 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="docNumberInput">Doc Number</label>
+              <label for="docNumberInput" id="docNumberLabel">Doc Number</label>
               <input type="text" id="docNumberInput" class="form-control" value="INV-20260707-731">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="docStatusGroup">
               <label for="docStatusSelect">Document Status</label>
               <select id="docStatusSelect" class="form-control">
                 <option value="SENT" selected>SENT</option>
@@ -102,11 +102,11 @@
                 <option value="UNPAID">UNPAID</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="issueDateInput">Issue Date</label>
+            <div class="form-group" id="issueDateGroup">
+              <label for="issueDateInput" id="issueDateLabel">Issue Date</label>
               <input type="date" id="issueDateInput" class="form-control">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="dueDateGroup">
               <label for="dueDateInput" id="dueDateLabel">Due Date</label>
               <input type="date" id="dueDateInput" class="form-control">
             </div>
@@ -117,72 +117,75 @@
           </div>
         </div>
 
-        <!-- Receipt & Payment Details Section -->
-        <div class="form-section" id="receiptDetailsSection">
+        <!-- Receipt Specific Form Section (Visible only on Receipt mode) -->
+        <div class="form-section" id="receiptDetailsSection" style="display: none;">
           <div class="section-label">
             <span><i class="fa-solid fa-receipt"></i> Payment & Receipt Details</span>
           </div>
           <div class="grid-2">
             <div class="form-group">
+              <label for="amountPaidInput">Amount Received (₹)</label>
+              <input type="number" id="amountPaidInput" class="form-control" min="0" step="100" placeholder="2150">
+            </div>
+            <div class="form-group">
               <label for="paymentModeSelect">Payment Method</label>
               <select id="paymentModeSelect" class="form-control">
+                <option value="Bank Transfer">Bank Transfer</option>
                 <option value="UPI / GPay / PhonePe">UPI / GPay / PhonePe</option>
-                <option value="Bank Transfer (NEFT / IMPS)">Bank Transfer (NEFT / IMPS)</option>
                 <option value="Cash">Cash</option>
                 <option value="Cheque">Cheque</option>
                 <option value="Credit / Debit Card">Credit / Debit Card</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="transactionIdInput">Transaction ID / UTR No.</label>
-              <input type="text" id="transactionIdInput" class="form-control" placeholder="e.g. UPI/423891028391">
+              <label for="creditedToInput">Credited to Account</label>
+              <input type="text" id="creditedToInput" class="form-control" value="3DHeritage Account">
             </div>
             <div class="form-group">
-              <label for="amountPaidInput">Amount Received (₹)</label>
-              <input type="number" id="amountPaidInput" class="form-control" min="0" step="100" placeholder="0">
-            </div>
-            <div class="form-group">
-              <label for="paymentDateInput">Payment Date</label>
-              <input type="date" id="paymentDateInput" class="form-control">
+              <label for="forNoteInput">For / Reference Note</label>
+              <input type="text" id="forNoteInput" class="form-control" placeholder="e.g. Invoice #INV-20260707-731: 3D Architectural Visualization">
             </div>
           </div>
         </div>
 
-
-        <!-- Client Information Form -->
-        <div class="form-section">
+        <!-- Client / Billing Information Section -->
+        <div class="form-section" id="clientInfoSection">
           <div class="section-label">
-            <span><i class="fa-solid fa-user-tag"></i> Client Information</span>
+            <span><i class="fa-solid fa-user-tag"></i> <span id="clientSectionHeading">Client Billing Info (BILL TO)</span></span>
           </div>
           <div class="grid-2">
             <div class="form-group">
-              <label for="clientNameInput">Client / Business Name</label>
-              <input type="text" id="clientNameInput" class="form-control" placeholder="e.g. Acme Heritage Constructions">
+              <label for="clientNameInput" id="clientNameLabel">Client Name</label>
+              <input type="text" id="clientNameInput" class="form-control" placeholder="e.g. Priya">
+            </div>
+            <div class="form-group" id="clientBusinessGroup">
+              <label for="clientBusinessInput">Company / Business Name</label>
+              <input type="text" id="clientBusinessInput" class="form-control" placeholder="e.g. PRIME TECH Equipments Repairing L.L.C">
             </div>
             <div class="form-group">
               <label for="clientPhoneInput">WhatsApp / Phone Number</label>
               <input type="tel" id="clientPhoneInput" class="form-control" placeholder="+91 9876543210">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="clientEmailGroup">
               <label for="clientEmailInput">Client Email</label>
               <input type="email" id="clientEmailInput" class="form-control" placeholder="client@example.com">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="clientAddressGroup" style="grid-column: span 2;">
               <label for="clientAddressInput">Billing Address</label>
               <textarea id="clientAddressInput" class="form-control" placeholder="Street, City, State, Pincode"></textarea>
             </div>
           </div>
         </div>
 
-        <!-- Predefined Product Dropdown & Dynamic Items -->
-        <div class="form-section">
+        <!-- Predefined Product Dropdown & Dynamic Items (Invoice & Quotation only) -->
+        <div class="form-section" id="itemsSection">
           <div class="section-label">
-            <span><i class="fa-solid fa-boxes-stacked"></i> Products & Services</span>
+            <span><i class="fa-solid fa-boxes-stacked"></i> Products & Line Items</span>
           </div>
           
           <div class="product-select-bar">
             <select id="productDropdown" class="form-control">
-              <option value="">-- Choose Predefined Product / Service --</option>
+              <option value="">-- Choose 3D Product / Service --</option>
             </select>
             <button id="btnAddPredefinedProduct" class="btn btn-primary btn-sm">
               <i class="fa-solid fa-plus"></i> Add Product
@@ -211,30 +214,8 @@
           </div>
         </div>
 
-        <!-- Bank Account Selector Section -->
-        <div class="form-section">
-          <div class="section-label">
-            <span><i class="fa-solid fa-building-columns"></i> Bank & Payment Details</span>
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label for="bankAccountSelect">Select Account Type</label>
-              <select id="bankAccountSelect" class="form-control">
-                <option value="business">3D Business Bank Account (HDFC Bank)</option>
-                <option value="upi">Customer Receipt / UPI (GPay / PhonePe)</option>
-                <option value="custom">Custom Bank Account Details</option>
-                <option value="hide">Hide Bank Details on PDF</option>
-              </select>
-            </div>
-            <div class="form-group" id="customBankInputs" style="display: none;">
-              <label for="customBankDetailsInput">Custom Bank Details</label>
-              <textarea id="customBankDetailsInput" class="form-control" placeholder="Bank Name, Account No, IFSC, etc."></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Financial Summary Controls (Optional Toggle) -->
-        <div class="form-section">
+        <!-- Taxes, Discount & Fees Section (Invoice & Quotation only) -->
+        <div class="form-section" id="taxesSection">
           <div class="section-label">
             <span><i class="fa-solid fa-calculator"></i> Taxes, Discount & Fees</span>
             <label class="toggle-checkbox-label">
@@ -262,15 +243,15 @@
               </label>
               <input type="number" id="taxRateInput" class="form-control" min="0" step="0.5" value="18">
             </div>
-            <div class="form-group">
+            <div class="form-group" id="shippingFeeGroup">
               <label for="shippingFeeInput">Shipping / Extra Charges</label>
               <input type="number" id="shippingFeeInput" class="form-control" min="0" step="100" value="0">
             </div>
           </div>
         </div>
 
-        <!-- Notes & Terms (Optional Toggle) -->
-        <div class="form-section">
+        <!-- Notes & Terms Section -->
+        <div class="form-section" id="notesSection">
           <div class="section-label">
             <span><i class="fa-solid fa-note-sticky"></i> Payment Notes & Terms</span>
             <label class="toggle-checkbox-label">
@@ -278,11 +259,11 @@
             </label>
           </div>
           <div class="grid-2" id="notesControlsGrid">
-            <div class="form-group">
-              <label for="notesInput">Notes / Instructions</label>
-              <textarea id="notesInput" class="form-control" placeholder="Payment methods, thank you note, etc."></textarea>
+            <div class="form-group" id="notesInputGroup">
+              <label for="notesInput">Payment Notes / Instructions</label>
+              <textarea id="notesInput" class="form-control" placeholder="Payment methods, bank details, thank you note, etc."></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="termsInputGroup">
               <label for="termsInput">Terms & Conditions</label>
               <textarea id="termsInput" class="form-control" placeholder="Validity, payment terms, refund policy..."></textarea>
             </div>
@@ -326,7 +307,7 @@
               <div class="pdf-company-addr" id="previewCompAddr">102 Heritage Creative Studio, Craft Sector</div>
               <div class="pdf-company-city" id="previewCompCity">New Delhi 110001</div>
               <div class="pdf-company-contact" id="previewCompContact">Phone: +91 96060 76606</div>
-              <div class="pdf-company-email" id="previewCompEmail">Email : info@3dheritage.com</div>
+              <div class="pdf-company-email" id="previewCompEmail">Email : 3dprintheritage@gmail.com</div>
             </div>
           </div>
 
@@ -451,7 +432,7 @@
           <div class="pdf-footer">
             <div class="pdf-footer-center" id="previewFooterCenter">
               <div class="pdf-footer-address" id="previewFooterAddress">102 Heritage Creative Studio, Craft Sector, New Delhi 110001</div>
-              <div class="pdf-footer-contact" id="previewFooterContact">info@3dheritage.com | +91 96060 76606</div>
+              <div class="pdf-footer-contact" id="previewFooterContact">3dprintheritage@gmail.com | +91 96060 76606</div>
               <div class="pdf-footer-sub" id="previewFooterSub">This is an electronically generated receipt.</div>
             </div>
           </div>
@@ -479,27 +460,11 @@
     <i class="fa-solid fa-circle-check"></i> <span id="toastContent">Notification</span>
   </div>
 
-  <!-- Application Scripts -->
-  <script src="js/products.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Notification Toast -->
+  <div id="toastMsg" class="toast-msg">
+    <i class="fa-solid fa-circle-check"></i> <span id="toastContent">Notification</span>
+  </div>
 
-  <!-- Mobile View Toggle & Initialization Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tabEditor = document.getElementById('tabMobileEditor');
-      const tabPreview = document.getElementById('tabMobilePreview');
-      const editorPanel = document.getElementById('editorPanel');
-      const previewPanel = document.getElementById('previewPanel');
-
-      // Bind mobile action buttons to main handler buttons
-      const btnWhatsAppMobile = document.getElementById('btnWhatsAppShareMobile');
-      const btnDownloadMobile = document.getElementById('btnDownloadPdfMobile');
-      const btnWhatsApp = document.getElementById('btnWhatsAppShare');
-      const btnDownload = document.getElementById('btnDownloadPdf');
-
-      if (btnWhatsAppMobile && btnWhatsApp) {
-        btnWhatsAppMobile.addEventListener('click', () => btnWhatsApp.click());
-      }
   <!-- Mobile Sticky Action Bar (Fixed at bottom on mobile screens) -->
   <div class="mobile-sticky-action-bar" id="mobileStickyActionBar">
     <button id="btnMobilePrint" class="btn btn-secondary mobile-action-btn">
@@ -513,6 +478,11 @@
     </button>
   </div>
 
+  <!-- Application Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Mobile View Toggle & Initialization Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const tabEditor = document.getElementById('tabMobileEditor');
@@ -541,16 +511,16 @@
       function updateMobileLayout() {
         const isMobile = window.innerWidth <= 1024;
         if (isMobile) {
-          if (tabPreview.classList.contains('active')) {
-            editorPanel.classList.add('mobile-hidden');
-            previewPanel.classList.remove('mobile-hidden');
+          if (tabPreview && tabPreview.classList.contains('active')) {
+            if (editorPanel) editorPanel.classList.add('mobile-hidden');
+            if (previewPanel) previewPanel.classList.remove('mobile-hidden');
           } else {
-            editorPanel.classList.remove('mobile-hidden');
-            previewPanel.classList.add('mobile-hidden');
+            if (editorPanel) editorPanel.classList.remove('mobile-hidden');
+            if (previewPanel) previewPanel.classList.add('mobile-hidden');
           }
         } else {
-          editorPanel.classList.remove('mobile-hidden');
-          previewPanel.classList.remove('mobile-hidden');
+          if (editorPanel) editorPanel.classList.remove('mobile-hidden');
+          if (previewPanel) previewPanel.classList.remove('mobile-hidden');
         }
       }
 
