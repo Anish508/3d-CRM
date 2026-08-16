@@ -20,10 +20,10 @@
   <!-- App Sticky Top Navigation Bar -->
   <header class="app-header">
     <div class="brand-section">
-      <img src="logo.png" alt="HERITAGE Logo" class="brand-logo-img">
+      <img src="logo.png" alt="3DHeritage Logo" class="brand-logo-img">
       <div class="brand-title-group">
-        <h1>HERITAGE <span>CRM</span></h1>
-        <p>3D & Design Studio Generator</p>
+        <h1><span style="color: #d90429;">3D</span>Heritage</h1>
+        <p>3D Studio PDF Generator</p>
       </div>
     </div>
 
@@ -87,7 +87,17 @@
             </div>
             <div class="form-group">
               <label for="docNumberInput">Doc Number</label>
-              <input type="text" id="docNumberInput" class="form-control" value="INV-2026-001">
+              <input type="text" id="docNumberInput" class="form-control" value="INV-20260707-731">
+            </div>
+            <div class="form-group">
+              <label for="docStatusSelect">Document Status</label>
+              <select id="docStatusSelect" class="form-control">
+                <option value="SENT" selected>SENT</option>
+                <option value="PAID">PAID</option>
+                <option value="PENDING">PENDING</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="UNPAID">UNPAID</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="issueDateInput">Issue Date</label>
@@ -96,6 +106,10 @@
             <div class="form-group">
               <label for="dueDateInput" id="dueDateLabel">Due Date</label>
               <input type="date" id="dueDateInput" class="form-control">
+            </div>
+            <div class="form-group" id="advancePaidGroup">
+              <label for="advancePaidInput">Advance Paid (₹)</label>
+              <input type="number" id="advancePaidInput" class="form-control" min="0" step="50" value="0">
             </div>
           </div>
         </div>
@@ -288,154 +302,155 @@
 
       <div class="preview-container-wrapper">
         
-        <!-- Printable A4 Document Sheet -->
+    <!-- Printable A4 Document Sheet -->
         <div id="pdfDocSheet" class="pdf-preview-sheet">
           
+          <!-- Top Accent Line -->
+          <div class="pdf-top-accent" id="pdfTopAccent"></div>
+
           <!-- Sheet Header -->
-          <div>
-            <div class="pdf-header">
-              <div class="pdf-logo-wrapper">
-                <img src="logo.png" alt="HERITAGE Logo" class="pdf-logo-img">
-                <div class="pdf-company-info">
-                  <div class="pdf-company-name">HERITAGE</div>
-                  <div class="pdf-company-sub">3D & Design Solutions</div>
-                </div>
-              </div>
-
-              <div class="pdf-doc-badge">
-                <div id="previewDocTitle" class="pdf-doc-title">INVOICE</div>
-                <div id="previewDocNumber" class="pdf-doc-number"># INV-2026-001</div>
+          <div class="pdf-header">
+            <div class="pdf-logo-wrapper">
+              <img src="logo.png" alt="3DHeritage Logo" class="pdf-logo-img">
+              <div class="pdf-brand-name" id="previewBrandName">
+                <span class="brand-logo-red">3D</span><span class="brand-logo-red">Heritage</span>
               </div>
             </div>
 
-            <!-- Meta Details & Billing Grid -->
-            <div class="pdf-details-grid">
-              <!-- Client Section -->
-              <div class="pdf-info-block">
-                <h4>Billed To / Client:</h4>
-                <div id="previewClientName" class="pdf-client-name">Acme Heritage Constructions</div>
-                <div id="previewClientPhone" class="pdf-client-details">+91 9876543210</div>
-                <div id="previewClientEmail" class="pdf-client-details">client@acmeheritage.com</div>
-                <div id="previewClientAddress" class="pdf-client-details">Suite 402, Landmark Towers, MG Road, Bengaluru</div>
-              </div>
+            <!-- Dynamic Header Right Block (Company Info or RECEIPT title) -->
+            <div class="pdf-header-right" id="previewHeaderRight">
+              <div class="pdf-company-name" id="previewCompName">3DHeritage</div>
+              <div class="pdf-company-addr" id="previewCompAddr">102 Heritage Creative Studio, Craft Sector</div>
+              <div class="pdf-company-city" id="previewCompCity">New Delhi 110001</div>
+              <div class="pdf-company-contact" id="previewCompContact">Phone: +91 96060 76606</div>
+              <div class="pdf-company-email" id="previewCompEmail">Email : info@3dheritage.com</div>
+            </div>
+          </div>
 
-              <!-- Doc Metadata Table -->
-              <div class="pdf-info-block">
-                <h4>Document Details:</h4>
-                <table class="pdf-meta-table">
-                  <tr>
-                    <td class="label" id="previewIssueDateLabel">Date Issued:</td>
-                    <td class="val" id="previewIssueDate">16 Aug 2026</td>
-                  </tr>
-                  <tr>
-                    <td class="label" id="previewDueDateLabel">Due Date:</td>
-                    <td class="val" id="previewDueDate">30 Aug 2026</td>
-                  </tr>
-                  <tr id="previewPaymentModeRow">
-                    <td class="label">Payment Method:</td>
-                    <td class="val" id="previewPaymentModeVal">UPI / GPay</td>
-                  </tr>
-                  <tr id="previewTransactionRow">
-                    <td class="label">Txn / UTR No:</td>
-                    <td class="val" id="previewTransactionVal">UPI/423891028391</td>
-                  </tr>
-                  <tr>
-                    <td class="label">Status:</td>
-                    <td class="val" id="previewStatusVal" style="color: #d90429; font-weight: 800;">PENDING</td>
-                  </tr>
-                </table>
-              </div>
+          <!-- Divider Line -->
+          <hr class="pdf-divider" id="pdfHeaderDivider">
+
+          <!-- Meta Grid (Bill To / Quote For) -->
+          <div id="previewMetaSection" class="pdf-details-grid">
+            <div class="pdf-info-block" id="previewClientBlock">
+              <div class="pdf-section-heading" id="previewClientHeaderLabel">BILL TO:</div>
+              <div id="previewClientName" class="pdf-client-name">Priya</div>
+              <div id="previewClientBusiness" class="pdf-client-business">PRIME TECH Equipments Repairing L.L.C</div>
+              <div id="previewClientAddress" class="pdf-client-details">Al-Quoz Ind-2, Dubai, U.A.E.</div>
+              <div id="previewClientPhone" class="pdf-client-details">Phone: +91 55 303 3714</div>
+              <div id="previewClientEmail" class="pdf-client-details">Email 1: smitha@primemea.com</div>
             </div>
 
-            <!-- Line Items Table -->
+            <div class="pdf-info-block pdf-meta-block" id="previewMetaBlock">
+              <div class="pdf-meta-row">
+                <span class="pdf-meta-label" id="previewDocNumLabel">Invoice Number:</span>
+                <span class="pdf-meta-val" id="previewDocNumber">#INV-20260707-731</span>
+              </div>
+              <div class="pdf-meta-row">
+                <span class="pdf-meta-label" id="previewIssueDateLabel">Invoice Date:</span>
+                <span class="pdf-meta-val" id="previewIssueDate">07 Jul, 2026</span>
+              </div>
+              <div class="pdf-meta-row" id="previewDueDateRow">
+                <span class="pdf-meta-label" id="previewDueDateLabel">Due Date:</span>
+                <span class="pdf-meta-val" id="previewDueDate">21 Jul, 2026</span>
+              </div>
+              <div class="pdf-meta-row" id="previewStatusRow">
+                <span class="pdf-meta-label">Status:</span>
+                <span class="pdf-meta-val status-badge" id="previewStatusVal">SENT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dedicated Receipt Section (Exact match to 3DHeritage receipt template image) -->
+          <div id="previewReceiptSection" class="pdf-receipt-section" style="display: none;">
+            <div class="pdf-meta-row" style="text-align: left; font-size: 0.88rem;">
+              <span class="pdf-meta-label">Receipt Number: </span>
+              <span class="pdf-meta-val" id="previewReceiptNumVal">#REC-20260726-710</span>
+            </div>
+            <div class="pdf-meta-row" style="text-align: left; margin-top: 6px; font-size: 0.88rem;">
+              <span class="pdf-meta-label">Date: </span>
+              <span class="pdf-meta-val" id="previewReceiptDateVal">26 Jul, 2026</span>
+            </div>
+
+            <div class="pdf-receipt-card">
+              <div class="pdf-receipt-badge-title">AMOUNT RECEIVED</div>
+              <div class="pdf-receipt-amount-display" id="previewReceiptAmountBig">₹2,150.00</div>
+            </div>
+
+            <div class="pdf-receipt-ack-text">
+              <p>Received with thanks from <strong id="previewReceiptAckClient">Priya</strong></p>
+              <p style="margin-top: 8px;">Sum of <strong id="previewReceiptAckAmount">₹2,150.00</strong></p>
+              <p style="margin-top: 8px;" id="previewReceiptPaymentMethodRow">Payment Method: <strong id="previewReceiptPaymentMethod">Bank Transfer</strong></p>
+              <p style="margin-top: 8px;" id="previewReceiptCreditedRow">Credited to Account: <strong id="previewReceiptCredited">3DHeritage Account</strong></p>
+              <p style="margin-top: 14px; font-style: italic; color: #475569; font-size: 0.84rem; line-height: 1.4;" id="previewReceiptForNotes">
+                For: Invoice #<span id="previewReceiptForInvNum">INV-20260707-731</span>: <span id="previewReceiptForItems">Brochure design, Email Signature Design</span>
+              </p>
+            </div>
+
+            <!-- Right-aligned Authorized Signature -->
+            <div class="pdf-receipt-signature-block">
+              <div style="font-size: 0.82rem; color: #475569; margin-bottom: 8px;">Authorized Signature</div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: #1e293b;" id="previewReceiptSigCompany">3DHeritage</div>
+            </div>
+          </div>
+
+          <!-- Line Items Table (Visible on Invoice & Quotation mode) -->
+          <div id="previewItemsWrapper">
             <table class="pdf-items-table">
               <thead>
                 <tr>
-                  <th class="center" style="width: 35px;">#</th>
-                  <th>Item & Description</th>
-                  <th class="center" style="width: 60px;">Qty</th>
-                  <th class="num" style="width: 100px;">Unit Price</th>
-                  <th class="num" style="width: 110px;">Amount</th>
+                  <th style="text-align: left;">Description</th>
+                  <th style="text-align: center; width: 70px;">Qty</th>
+                  <th style="text-align: right; width: 110px;">Unit Price</th>
+                  <th style="text-align: right; width: 120px;">Total</th>
                 </tr>
               </thead>
               <tbody id="previewItemsTableBody">
-                <!-- Dynamic Rows from App JS -->
+                <!-- Dynamically populated rows -->
               </tbody>
             </table>
-
-            <!-- Summary & Calculations -->
-            <div class="pdf-summary-section">
-              <div class="pdf-bank-notes">
-                <div id="previewBankBlock">
-                  <div class="pdf-bank-title"><i class="fa-solid fa-building-columns"></i> Payment / Transfer Details:</div>
-                  <p id="previewBankText" style="margin-bottom: 6px;">
-                    Bank Name: HDFC Bank<br>
-                    Account Name: HERITAGE 3D SOLUTIONS<br>
-                    Account No: 50200012345678 | IFSC: HDFC0001234
-                  </p>
-                </div>
-                <div id="previewNotesBlock">
-                  <div class="pdf-terms-title"><i class="fa-solid fa-circle-info"></i> Notes & Special Instructions:</div>
-                  <div id="previewNotes">Thank you for choosing HERITAGE! Payment received with thanks.</div>
-                </div>
-              </div>
-
-              <div class="pdf-totals-box">
-                <table class="pdf-totals-table">
-                  <tr>
-                    <td class="label">Subtotal:</td>
-                    <td class="val" id="previewSubtotal">₹0</td>
-                  </tr>
-                  <tr id="previewDiscountRow" style="display: none;">
-                    <td class="label" id="previewDiscountLabel">Discount:</td>
-                    <td class="val" id="previewDiscountVal">-₹0</td>
-                  </tr>
-                  <tr id="previewTaxRow">
-                    <td class="label" id="previewTaxLabel">Tax / GST (18%):</td>
-                    <td class="val" id="previewTaxVal">+₹0</td>
-                  </tr>
-                  <tr id="previewShippingRow" style="display: none;">
-                    <td class="label">Shipping / Extra:</td>
-                    <td class="val" id="previewShippingVal">+₹0</td>
-                  </tr>
-                  <tr class="grand-total-row">
-                    <td class="label" id="previewTotalLabel">Total Amount:</td>
-                    <td class="val" id="previewGrandTotal">₹0</td>
-                  </tr>
-                  <tr id="previewAmountPaidRow">
-                    <td class="label">Amount Received:</td>
-                    <td class="val" id="previewAmountPaidVal" style="color: #25d366;">₹0</td>
-                  </tr>
-                  <tr id="previewBalanceDueRow">
-                    <td class="label">Balance Remaining:</td>
-                    <td class="val" id="previewBalanceDueVal" style="color: #d90429;">₹0</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-
           </div>
 
-          <!-- Footer & Authorized Signatures + Computer Generated Notice -->
+          <!-- Summary & Totals Box -->
+          <div class="pdf-summary-section" id="previewSummarySection">
+            <div class="pdf-notes-col" id="previewNotesCol">
+              <div class="pdf-notes-header" id="previewNotesHeader">PAYMENT NOTES:</div>
+              <div class="pdf-notes-body" id="previewNotesText">Please make payment to our designated accounts. Mention invoice number in reference.</div>
+            </div>
+
+            <div class="pdf-totals-box" id="previewTotalsBox">
+              <table class="pdf-totals-table">
+                <tr id="previewSubtotalRow">
+                  <td class="label">Subtotal:</td>
+                  <td class="val" id="previewSubtotal">₹2,150.00</td>
+                </tr>
+                <tr id="previewAdvanceRow">
+                  <td class="label">Advance Paid:</td>
+                  <td class="val" id="previewAdvanceVal">₹0.00</td>
+                </tr>
+                <tr id="previewDiscountRow" style="display: none;">
+                  <td class="label" id="previewDiscountLabel">Discount:</td>
+                  <td class="val" id="previewDiscountVal">-₹0.00</td>
+                </tr>
+                <tr id="previewTaxRow" style="display: none;">
+                  <td class="label" id="previewTaxLabel">Tax / GST:</td>
+                  <td class="val" id="previewTaxVal">+₹0.00</td>
+                </tr>
+                <tr class="final-total-row" id="previewFinalTotalRow">
+                  <td class="label" id="previewTotalLabel">Balance Due:</td>
+                  <td class="val" id="previewGrandTotal">₹2,150.00</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Footer -->
           <div class="pdf-footer">
-            <div class="pdf-footer-terms" id="previewTermsBlock">
-              <div class="pdf-terms-title">Terms & Conditions</div>
-              <div id="previewTerms">1. 50% advance upon quotation approval.<br>2. All 3D digital assets delivered after final payment.</div>
-              <div id="previewCompanyAddress" style="margin-top: 4px; color: #94a3b8;">102 Heritage Creative Studio, Craft Sector, New Delhi</div>
-              <div id="previewCompanyPhoneEmail" style="color: #94a3b8;">Phone: +91 96060 76606 | Email: info@heritage3d.com</div>
-              <div id="previewCompanyTaxId" style="color: #94a3b8;">GSTIN: 07AAAAA0000A1Z5 | www.heritage3d.com</div>
+            <div class="pdf-footer-center" id="previewFooterCenter">
+              <div class="pdf-footer-address" id="previewFooterAddress">102 Heritage Creative Studio, Craft Sector, New Delhi 110001</div>
+              <div class="pdf-footer-contact" id="previewFooterContact">info@3dheritage.com | +91 96060 76606</div>
+              <div class="pdf-footer-sub" id="previewFooterSub">This is an electronically generated receipt.</div>
             </div>
-
-            <div class="pdf-signature-block">
-              <div class="pdf-signature-line"></div>
-              <div class="pdf-signature-label">HERITAGE 3D</div>
-              <div class="pdf-signature-sub">Authorized Signatory</div>
-            </div>
-          </div>
-
-          <!-- Computer Generated Document Notice -->
-          <div class="pdf-computer-notice">
-            <i class="fa-solid fa-laptop"></i> This is a computer-generated document. No physical signature is required.
           </div>
 
         </div>

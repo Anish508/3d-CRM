@@ -5,16 +5,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --primary-red: #d90429;
-  --primary-red-hover: #ef233c;
-  --primary-red-dark: #b7094c;
+  --primary-accent: #00a86b;
+  --primary-accent-hover: #029857;
+  --primary-red: #00a86b;
+  --primary-red-hover: #029857;
+  --primary-red-dark: #065f46;
   --dark-slate: #0f172a;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --bg-light: #f8fafc;
   --card-bg: #ffffff;
   --border-color: #e2e8f0;
-  --border-focus: #d90429;
+  --border-focus: #00a86b;
   --whatsapp-green: #25d366;
   --whatsapp-green-hover: #1eaa53;
   --radius-sm: 6px;
@@ -589,17 +591,17 @@ textarea.form-control {
   min-height: 800px;
 }
 
-/* Exact A4 Proportional Document Box */
+/* Printable A4 Sheet Container */
 .pdf-preview-sheet {
   background: #ffffff;
   width: 210mm;
-  height: 296mm;
-  max-height: 296mm;
-  padding: 8mm 10mm;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  height: 297mm;
+  max-height: 297mm;
+  padding: 12mm 15mm;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
   color: #1e293b;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -607,13 +609,20 @@ textarea.form-control {
   overflow: hidden;
 }
 
-/* PDF Document Inner Components */
+.pdf-top-accent {
+  height: 4px;
+  background: #00a86b;
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 2px;
+  display: none;
+}
+
+/* Header layout */
 .pdf-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding-bottom: 12px;
-  border-bottom: 3px solid var(--primary-red);
 }
 
 .pdf-logo-wrapper {
@@ -623,108 +632,120 @@ textarea.form-control {
 }
 
 .pdf-logo-img {
-  height: 52px;
+  height: 46px;
   width: auto;
   object-fit: contain;
+  border-radius: 4px;
 }
 
-.pdf-company-info {
-  text-align: left;
-}
-
-.pdf-company-name {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.3rem;
+.pdf-brand-name {
+  font-size: 1.6rem;
   font-weight: 800;
-  color: var(--dark-slate);
-  letter-spacing: -0.3px;
-}
-
-.pdf-company-sub {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 1px;
-  line-height: 1.2;
-}
-
-.pdf-doc-badge {
-  text-align: right;
-}
-
-.pdf-doc-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--primary-red);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #d90429;
+  letter-spacing: -0.5px;
   line-height: 1;
 }
 
-.pdf-doc-number {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--dark-slate);
-  margin-top: 4px;
+.pdf-brand-name .brand-logo-red {
+  color: #d90429;
 }
 
-/* PDF Meta Info & Billing Section */
+.pdf-header-right {
+  text-align: right;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #475569;
+}
+
+.pdf-header-right .pdf-receipt-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #00a86b;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.pdf-company-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.88rem;
+}
+
+/* Divider Line */
+.pdf-divider {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  margin: 16px 0;
+}
+
+/* Details Grid */
 .pdf-details-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 16px;
-  margin-top: 12px;
-  margin-bottom: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 20px;
 }
 
-
-.pdf-info-block h4 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 700;
+.pdf-section-heading {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
   text-transform: uppercase;
-  color: var(--primary-red);
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   margin-bottom: 6px;
 }
 
 .pdf-client-name {
-  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--dark-slate);
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.pdf-client-business {
+  font-size: 0.85rem;
+  color: #334155;
+  margin-top: 2px;
 }
 
 .pdf-client-details {
+  font-size: 0.82rem;
+  color: #475569;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.pdf-meta-block {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pdf-meta-row {
   font-size: 0.85rem;
   color: #475569;
-  line-height: 1.4;
-  margin-top: 4px;
 }
 
-.pdf-meta-table {
-  width: 100%;
-  font-size: 0.85rem;
-  border-collapse: collapse;
+.pdf-meta-label {
+  color: #475569;
 }
 
-.pdf-meta-table td {
-  padding: 4px 0;
-}
-
-.pdf-meta-table td.label {
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.pdf-meta-table td.val {
-  text-align: right;
+.pdf-meta-val {
   font-weight: 700;
-  color: var(--dark-slate);
-  font-family: 'JetBrains Mono', monospace;
+  color: #1e293b;
 }
 
-/* Line Items Table in PDF */
+.status-badge {
+  color: #e11d48;
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+.status-badge.status-paid {
+  color: #00a86b;
+}
+
+/* Table Styling */
 .pdf-items-table {
   width: 100%;
   border-collapse: collapse;
@@ -732,58 +753,72 @@ textarea.form-control {
 }
 
 .pdf-items-table th {
-  background: var(--dark-slate);
-  color: #ffffff;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.8rem;
+  padding: 10px 8px;
+  font-size: 0.85rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 10px 12px;
-  text-align: left;
-}
-
-.pdf-items-table th.num {
-  text-align: right;
-}
-
-.pdf-items-table th.center {
-  text-align: center;
+  color: #1e293b;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  background: transparent;
 }
 
 .pdf-items-table td {
-  padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  font-size: 0.88rem;
+  padding: 12px 8px;
+  font-size: 0.85rem;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
   vertical-align: top;
 }
 
-.pdf-items-table tr:nth-child(even) td {
-  background-color: #f8fafc;
-}
-
 .pdf-item-title {
-  font-weight: 700;
-  color: var(--dark-slate);
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .pdf-item-desc {
   font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 3px;
+  color: #64748b;
+  margin-top: 2px;
 }
 
-.pdf-items-table td.num {
-  text-align: right;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-}
-
-.pdf-items-table td.center {
+.pdf-receipt-card {
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  border-radius: 10px;
+  padding: 22px 16px;
   text-align: center;
+  margin: 20px 0;
 }
 
-/* Totals Summary Section */
+.pdf-receipt-badge-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pdf-receipt-amount-display {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #00a86b;
+}
+
+.pdf-receipt-ack-text {
+  font-size: 0.95rem;
+  color: #334155;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.pdf-receipt-signature-block {
+  text-align: right;
+  margin-top: 36px;
+  margin-bottom: 20px;
+}
+
+/* Summary Section */
 .pdf-summary-section {
   display: flex;
   justify-content: space-between;
@@ -792,19 +827,23 @@ textarea.form-control {
   gap: 20px;
 }
 
-.pdf-bank-notes {
+.pdf-notes-col {
   flex: 1;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: #475569;
 }
 
-.pdf-bank-title, .pdf-terms-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  color: var(--dark-slate);
-  font-size: 0.82rem;
-  margin-bottom: 4px;
+.pdf-notes-header {
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 0.8rem;
   text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pdf-notes-body {
+  line-height: 1.4;
+  color: #475569;
 }
 
 .pdf-totals-box {
@@ -819,95 +858,63 @@ textarea.form-control {
 
 .pdf-totals-table td {
   padding: 6px 0;
-  border-bottom: 1px dashed #e2e8f0;
 }
 
 .pdf-totals-table td.label {
-  color: var(--text-muted);
-  font-weight: 600;
+  color: #475569;
 }
 
 .pdf-totals-table td.val {
   text-align: right;
-  font-weight: 700;
-  color: var(--dark-slate);
-  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: #1e293b;
 }
 
-.pdf-totals-table tr.grand-total-row td {
-  border-top: 2px solid var(--primary-red);
-  border-bottom: 2px solid var(--primary-red);
-  padding: 10px 0;
+.pdf-totals-table tr.final-total-row td {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+  margin-top: 4px;
 }
 
-.pdf-totals-table tr.grand-total-row td.label {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.05rem;
+.pdf-totals-table tr.final-total-row td.label {
+  font-size: 1.1rem;
   font-weight: 800;
-  color: var(--primary-red);
+  color: #00a86b;
 }
 
-.pdf-totals-table tr.grand-total-row td.val {
-  font-size: 1.2rem;
+.pdf-totals-table tr.final-total-row td.val {
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--primary-red);
+  color: #00a86b;
 }
 
-/* PDF Footer & Signatures */
+/* Footer */
 .pdf-footer {
   margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid #cbd5e1;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.pdf-footer-terms {
-  max-width: 60%;
-  font-size: 0.72rem;
-  color: #64748b;
-  line-height: 1.3;
-}
-
-.pdf-signature-block {
   text-align: center;
-  min-width: 160px;
+  padding-top: 12px;
 }
 
-.pdf-signature-line {
-  border-bottom: 1.5 solid #64748b;
-  height: 35px;
-  margin-bottom: 4px;
+.footer-divider {
+  margin-bottom: 12px;
 }
 
-.pdf-signature-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--dark-slate);
-  text-transform: uppercase;
-}
-
-.pdf-signature-sub {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-}
-
-/* Computer Generated Document Notice */
-.pdf-computer-notice {
-  margin-top: 10px;
-  padding-top: 6px;
-  border-top: 1px dashed #cbd5e1;
-  text-align: center;
-  font-size: 0.72rem;
-  color: #64748b;
+.pdf-footer-msg {
+  font-size: 0.82rem;
   font-weight: 600;
+  color: #334155;
+  margin-bottom: 3px;
+}
+
+.pdf-footer-sub {
+  font-size: 0.75rem;
+  color: #64748b;
 }
 
 .toggle-checkbox-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--primary-red);
+  color: var(--primary-accent);
   display: flex;
   align-items: center;
   gap: 6px;
