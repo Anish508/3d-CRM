@@ -689,8 +689,8 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.previewTerms.innerHTML = state.terms ? escapeHtml(state.terms).replace(/\n/g, '<br>') : '';
   }
 
-  // Export PDF using html2pdf.js with exact element bounding box capture & rename prompt
-  function downloadPdf() {
+  // Export PDF using html2canvas & jsPDF direct 1:1 image fitting (Guaranteed 1 single A4 page, 0 clipping)
+  async function downloadPdf() {
     const sheet = document.getElementById('pdfDocSheet');
     if (!sheet) return;
 
@@ -700,7 +700,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ask user for custom PDF filename
     const userChosenName = prompt("Enter filename for your PDF document:", defaultFilename);
 
-    // Cancel clicked
     if (userChosenName === null) {
       return;
     }
@@ -710,39 +709,45 @@ document.addEventListener('DOMContentLoaded', () => {
       filename = defaultFilename;
     }
 
-    // Auto-append .pdf extension if omitted
     if (!filename.toLowerCase().endsWith('.pdf')) {
       filename += '.pdf';
     }
 
     showToast(`Generating ${filename}...`, 'info');
 
-    // Measure exact screen bounding box of the preview sheet
-    const rect = sheet.getBoundingClientRect();
-    const scrollX = window.scrollX || window.pageXOffset || 0;
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-
-    const opt = {
-      margin: 0,
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2, 
-        useCORS: true, 
+    try {
+      // 1. Capture exact canvas image of the PDF sheet using html2canvas
+      const canvas = await html2canvas(sheet, {
+        scale: 2,
+        useCORS: true,
         logging: false,
-        x: scrollX + rect.left,
-        y: scrollY + rect.top,
-        width: rect.width,
-        height: rect.height
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: 'avoid-all' }
-    };
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0
+      });
 
-    html2pdf().set(opt).from(sheet).outputPdf('blob').then((pdfBlob) => {
-      const blob = new Blob([pdfBlob], { type: 'application/pdf' });
-      const blobUrl = URL.createObjectURL(blob);
-      
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+      // 2. Initialize jsPDF A4 document (210mm x 297mm)
+      const jsPDFConstructor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+      if (!jsPDFConstructor) {
+        throw new Error('jsPDF library not loaded');
+      }
+
+      const pdf = new jsPDFConstructor({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // 3. Add image mapped 1:1 to fill exactly (0, 0, 210mm, 297mm)
+      // This guarantees 1 page, 0 right clipping, 0 left shift, 0 overflow!
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+
+      // 4. Output binary blob with explicit application/pdf MIME type
+      const pdfBlob = pdf.output('blob');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+
       const link = document.createElement('a');
       link.href = blobUrl;
       link.download = filename;
@@ -752,10 +757,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
       showToast(`Downloaded: ${filename}`, 'success');
-    }).catch(err => {
-      console.error('PDF Blob export error:', err);
+
+    } catch (err) {
+      console.error('PDF export error:', err);
+      showToast('Export failed, opening print dialog...', 'info');
       window.print();
-    });
+    }
   }
 
   // Direct WhatsApp Sharing
